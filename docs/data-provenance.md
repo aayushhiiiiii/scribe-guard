@@ -5,7 +5,7 @@
 | Field      | Value                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Source     | Figshare, https://doi.org/10.6084/m9.figshare.22494601                                                                          |
-| Version    | [VERSION FROM FIGSHARE PAGE]                                                                                                    |
+| Version    | v1, posted 2023-07-08 (versioned DOI: 10.6084/m9.figshare.22494601.v1)                                                                                                    |
 | Downloaded | 2026-09-29                                                                                                                      |
 | License    | CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), as stated on the Figshare page; the download contains no license file |
 | Local path | `data/raw/aci-bench-corpus/` (gitignored)                                                                                       |
