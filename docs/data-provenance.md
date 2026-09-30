@@ -58,7 +58,7 @@ train_metadata.csv: 67 rows × 10 columns: `dataset`, `encounter_id`, `id`,
 - Missing values: doctor_name 60, patient_age 13, patient_familyname 20,
   2nd_complaints 24, patient_firstname 8, patient_gender 2; all others 0.
 - `patient_age` loads as float64 because of NaN. Range 3–91, median 53 (n=54).
-  N encounter(s) under 18.
+  1 encounter under 18 (D2N055, aci, age 3).
 
 Format observations:
 
