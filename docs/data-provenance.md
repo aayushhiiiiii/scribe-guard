@@ -5,7 +5,7 @@
 | Field      | Value                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Source     | Figshare, https://doi.org/10.6084/m9.figshare.22494601                                                                          |
-| Version    | v1, posted 2023-07-08 (versioned DOI: 10.6084/m9.figshare.22494601.v1)                                                                                                    |
+| Version    | v1, posted 2023-07-08 (versioned DOI: 10.6084/m9.figshare.22494601.v1)                                                          |
 | Downloaded | 2026-09-29                                                                                                                      |
 | License    | CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), as stated on the Figshare page; the download contains no license file |
 | Local path | `data/raw/aci-bench-corpus/` (gitignored)                                                                                       |
@@ -39,3 +39,39 @@ From `data/raw/`, run:
     shasum -a 256 -c ../../docs/aci-bench-sha256.txt
 
 Every line should end in `OK`.
+
+## Observed structure: challenge_data/train (inspected 2026-09-30, pandas 3.0.6)
+
+train.csv: 67 rows × 4 columns: `dataset`, `encounter_id`, `dialogue`, `note`.
+The README lists `id, dialogue, note`; actual columns differ (no `id`, extra `dataset`).
+
+- Subset counts (`dataset`): aci 35, virtassist 20, virtscribe 12.
+- `encounter_id` is unique (format `D2N###`); used as primary key.
+
+train_metadata.csv: 67 rows × 10 columns: `dataset`, `encounter_id`, `id`,
+`doctor_name`, `patient_gender`, `patient_age`, `patient_firstname`,
+`patient_familyname`, `cc`, `2nd_complaints`.
+
+- `encounter_id` sets are identical across both files → join key.
+- `id` appears to be a source-collection ID (e.g. `VA049` for virtassist).
+  Interpretation, not verified.
+- Missing values: doctor_name 60, patient_age 13, patient_familyname 20,
+  2nd_complaints 24, patient_firstname 8, patient_gender 2; all others 0.
+- `patient_age` loads as float64 because of NaN. Range 3–91, median 53 (n=54).
+  N encounter(s) under 18.
+
+Format observations:
+
+- Dialogue: one turn per line, `[doctor]` / `[patient]` tags; lowercase,
+  unpunctuated, disfluent, includes small talk. Patient names spoken aloud.
+- Note: ALL-CAPS section headers (e.g. CHIEF COMPLAINT, MEDICAL HISTORY,
+  REVIEW OF SYSTEMS, PHYSICAL EXAM, ASSESSMENT AND PLAN); some bullets run
+  together on one line.
+
+Open questions:
+
+- Which transcript version (ASR-corrected or raw ASR) is in challenge_data
+  `dialogue` for aci?
+- Which ID column do src_experiment_data files use?
+- Virtassist single-version hypothesis: supported (20 virtassist encounters in
+  train, no virtassist files in src_experiment_data), not confirmed.
