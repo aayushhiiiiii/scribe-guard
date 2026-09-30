@@ -9,6 +9,7 @@ description = "Detects hallucinations and omissions in AI-generated clinical not
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "pandas>=3.0",
     "pydantic>=2",
 ]
 
