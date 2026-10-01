@@ -1,8 +1,7 @@
 """Data structures shared across the project."""
 
 from typing import Literal
-
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Flag(BaseModel):
@@ -12,3 +11,32 @@ class Flag(BaseModel):
     explanation: str
     note_text: str | None = None
     transcript_evidence: str | None = None
+
+
+Subset = Literal["aci", "virtassist", "virtscribe"]
+
+AgeUnit = Literal["years", "months"]
+
+
+class Age(BaseModel):
+    """A patient age with an explicit unit, as recorded in the source data."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    value: int = Field(ge=0, le=120)
+    unit: AgeUnit
+
+class Encounter(BaseModel):
+    """One ACI-BENCH encounter: dialogue, reference note, and selected metadata."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    encounter_id: str = Field(pattern=r"^D2N\d{3}$")
+    source_id: str = Field(min_length=1)
+    subset: Subset
+    dialogue: str = Field(min_length=1)
+    note: str = Field(min_length=1)
+    chief_complaint: str = Field(min_length=1)
+    secondary_complaints: str | None = None
+    patient_age: Age | None = None
+    patient_gender: str | None = None

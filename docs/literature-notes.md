@@ -201,3 +201,8 @@ Compared full-note vs division-based generation.
 - **Hybrid retrieval:** combining lexical (BM25) and embedding-based search.
 - **Shortcut learning:** exploiting superficial cues instead of the intended skill.
 - **External / ecological validity:** whether results hold in real-world settings.
+
+### ACI-BENCH addendum (2026-09-29, from data download)
+- 207 encounters total (source: README.txt in Figshare download; per-subset sizes still to confirm against paper Table 3).
+- Figshare record posted 2023-07-08; download is 1.26 MB zipped (source: Figshare item page).
+- Some ASR-derived transcripts contain swapped speaker tags ([doctor]/[patient]), intentionally left uncorrected by the authors (source: wyim/aci-bench GitHub README). Relevant to attribution rules in Phase 2.
