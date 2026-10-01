@@ -28,12 +28,46 @@ from the transcripts.
 **Consequences:** The evaluation measures errors against what was
 actually said. The trade-off is extra work to build the fact sheets.
 
-## 003: Report detection at fixed false-alarm rates, split by error type
+## 003: Evaluate at fixed false-alarm rates with frozen thresholds
 
-**Status:** Accepted
+**Status:** Proposed. To be written.
 
-**Context:**
+Report detection performance at fixed false-alarm rates, separately for
+hallucinations and omissions. Tune thresholds on the dev split, freeze them,
+and report once on the held-out test split.
 
-**Decision:**
+## 004: Transcript version used as evidence for the aci subset
+
+**Status:** Proposed. To be written.
+
+Leading option: ASR-corrected transcripts as the main evidence source, with a
+raw-ASR robustness test on valid/test only (train has no raw aci ASR file).
+
+## 005: Represent patient age as value plus explicit unit
+
+**Status:** Accepted (2026-09-30)
+
+**Context:** The Encounter model originally stored age as an integer number of
+years. Validating all five challenge_data splits showed that two pediatric ages
+are recorded in months (`22-month` in valid, `9-month` in
+clinicalnlp_taskB_test1). A survey of every metadata file found no other formats.
+
+**Decision:** Store age as a nested `Age` model with `value` (non-negative
+integer) and `unit` (`"years"` or `"months"`). The loader parses the two
+observed formats; any other format raises an error naming the encounter.
+
+**Alternatives considered:**
+
+- Convert everything to years as a float: simpler, but discards the source
+  unit and implies false precision (22 months becomes 1.83 years).
+- Keep the raw text: no parsing, but no validation, and it pushes format
+  handling into every downstream component.
 
 **Consequences:**
+
+- Lossless and strictly validated; mirrors FHIR's value-plus-unit approach.
+- The range limit (0–120) applies to both units, so implausible values like
+  110 months are not rejected. Accepted for now: only 9 and 22 months occur.
+- New formats (e.g. weeks) require an explicit code change, by design.
+- Detector relevance: unit errors (e.g. "22-year-old" vs. "22 months") are a
+  hallucination type the numeric rules should cover in Phase 2.

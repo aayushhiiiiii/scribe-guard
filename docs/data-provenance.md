@@ -75,3 +75,24 @@ Open questions:
 - Which ID column do src_experiment_data files use?
 - Virtassist single-version hypothesis: supported (20 virtassist encounters in
   train, no virtassist files in src_experiment_data), not confirmed.
+
+## Observed structure: all challenge_data splits (verified 2026-09-30 via load_split)
+
+| Split                   | virtassist | virtscribe | aci     | Total   |
+| ----------------------- | ---------- | ---------- | ------- | ------- |
+| train                   | 20         | 12         | 35      | 67      |
+| valid                   | 5          | 4          | 11      | 20      |
+| clinicalnlp_taskB_test1 | 10         | 8          | 22      | 40      |
+| clinicalnlp_taskC_test2 | 10         | 8          | 22      | 40      |
+| clef_taskC_test3        | 10         | 8          | 22      | 40      |
+| **All**                 | **55**     | **40**     | **112** | **207** |
+
+- Total of 207 confirmed by direct count (matches README.txt).
+- 207 unique encounter_ids: no encounter appears in more than one challenge split.
+- Every split: all data rows matched metadata on (encounter_id, dataset); no rows lost.
+- `patient_age` formats: whole years (all splits) and `N-month` (valid: `22-month`,
+  D2N076; clinicalnlp_taskB_test1: `9-month`). No other formats observed.
+- Non-missing ages: train 54, valid 16, test1 35, test2 35, test3 32.
+- At least 3 pediatric encounters (3 years, 9 months, 22 months). Too few to
+  support any pediatric performance claim.
+- Per-subset sizes still to confirm against paper Table 3.
