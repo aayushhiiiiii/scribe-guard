@@ -1,8 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from scribe_guard.schemas import Encounter, Flag
-
+from scribe_guard.schemas import Age, Encounter, Flag
 
 def test_flag_accepts_valid_error_type():
     flag = Flag(
@@ -36,10 +35,15 @@ def test_encounter_accepts_valid_data():
     assert encounter.patient_age is None
 
 
-def test_encounter_converts_whole_float_age_to_int():
-    encounter = Encounter(**make_encounter_data(patient_age=45.0))
-    assert encounter.patient_age == 45
-    assert isinstance(encounter.patient_age, int)
+def test_encounter_accepts_age_in_months():
+    encounter = Encounter(**make_encounter_data(patient_age={"value": 22, "unit": "months"}))
+    assert encounter.patient_age == Age(value=22, unit="months")
+
+
+def test_age_converts_whole_float_value_to_int():
+    age = Age(value=45.0, unit="years")
+    assert age.value == 45
+    assert isinstance(age.value, int)
 
 
 def test_encounter_rejects_unknown_subset():
@@ -63,11 +67,17 @@ def test_encounter_rejects_empty_dialogue():
 
 
 def test_encounter_rejects_impossible_age():
-    with pytest.raises(ValidationError):
-        Encounter(**make_encounter_data(patient_age=200))
+    with pytest.raises(ValidationError, match="less than or equal to 120"):
+        Encounter(**make_encounter_data(patient_age={"value": 200, "unit": "years"}))
+
+
+def test_age_rejects_unknown_unit():
+    with pytest.raises(ValidationError, match="unit"):
+        Age(value=6, unit="weeks")
 
 
 def test_encounter_is_immutable():
     encounter = Encounter(**make_encounter_data())
     with pytest.raises(ValidationError):
         encounter.subset = "virtscribe"
+

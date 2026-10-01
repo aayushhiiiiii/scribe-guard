@@ -15,6 +15,17 @@ class Flag(BaseModel):
 
 Subset = Literal["aci", "virtassist", "virtscribe"]
 
+AgeUnit = Literal["years", "months"]
+
+
+class Age(BaseModel):
+    """A patient age with an explicit unit, as recorded in the source data."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    value: int = Field(ge=0, le=120)
+    unit: AgeUnit
+
 class Encounter(BaseModel):
     """One ACI-BENCH encounter: dialogue, reference note, and selected metadata."""
 
@@ -27,5 +38,5 @@ class Encounter(BaseModel):
     note: str = Field(min_length=1)
     chief_complaint: str = Field(min_length=1)
     secondary_complaints: str | None = None
-    patient_age: int | None = Field(default=None, ge=0, le=120)
+    patient_age: Age | None = None
     patient_gender: str | None = None
